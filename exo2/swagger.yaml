@@ -1,0 +1,159 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: CC ING3 Archi web
+  description: Mon CC d'architecture web pour le nomadisme
+  termsOfService: terms
+  contact:
+    name: Romain ALBERCA
+    url: 'https://github.com/AlbRk'
+    email: romain@alberca.fr
+  license:
+    name: MIT
+    url: 'http://opensource.org/licenses/MIT'
+host: "localhost:9090"
+basePath: /
+tags:
+  - name: Emprunt
+    description: Demande de emprunt 
+paths:
+  /createEmprunt:
+    post:
+      tags:
+        - Emprunt
+      summary: demande d emprunt
+      description: en entrée les informations sur le livre et l'emprunteur
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: submitParam
+          required: true
+          schema:
+            $ref: '#/definitions/SubmitRequest'
+      responses:
+        '200':
+          description: La soumission est un success
+          schema:
+            $ref: '#/definitions/Message'
+  /getEmprunt/{idEmprunt}:
+    get:
+      tags:
+       - Emprunt
+      summary: Recuperer un emprunt
+      parameters:
+        - in: path
+          name: idEmprunt
+          required: true
+          type: integer
+          description: ID du emprunt à récuperer
+      responses:
+         200:
+           description: OK
+  /deleteEmprunt/{idEmprunt}:
+    delete:
+      tags:
+       - Emprunt
+      summary: Supprimer un emprunt
+      parameters:
+        - in: path
+          name: idEmprunt
+          required: true
+          type: integer
+          description: ID du emprunt à supprimer
+      responses:
+        200:
+          description: OK
+  /updateEmprunt:
+    put:
+      tags:
+        - Emprunt
+      summary: Mettre à jour un emprunt
+      consumes:
+        - application/json
+      produces:
+        - application/xml
+      parameters:
+        - in: body
+          name: body
+          description: L'objet emprunt à mettre à jour
+          required: true
+          schema:
+            $ref: '#/definitions/Emprunt'
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: rdv not found
+        '405':
+          description: Validation exception
+definitions:
+  Utilisateur:
+    required:
+      - nom
+      - prenom
+      - email
+    properties:
+      nom:
+        type: string
+        example: ALBERCA
+        description: Nom de l utilisateur
+      prenom:
+        type: string
+        example: Romain
+        description: Prénom de l utilisateur
+      email:
+        type: string
+        format: email
+        example: romain@alberca.fr
+  Livre:
+    required:
+      - titre
+      - categorie
+      - neuf
+    properties:
+      titre:
+        type: string
+        example: le java pour les nuls
+      categorie:
+        type: string
+        example: action
+      neuf:
+        type: boolean
+        example: true
+  Emprunt:
+    required: 
+      - date
+      - horaire
+    properties:
+      date:
+        type: string
+        format: date
+        example: '1994-01-13'
+      horaire:
+        type: string
+        format: date-time
+        example: 13:00
+      livre:
+        $ref: '#/definitions/Livre'
+      participant:
+        type: array
+        items:
+          $ref: '#/definitions/Utilisateur'
+        description: Liste des utilisateurs
+      
+  Message:
+    properties:
+      contenu:
+        type: string
+        example: succes
+        description: Message de succes
+        
+  SubmitRequest:
+    required:
+      - Emprunt
+    properties:
+      Emprunt:
+        $ref: '#/definitions/Emprunt'
